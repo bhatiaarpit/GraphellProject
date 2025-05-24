@@ -1,0 +1,7 @@
+Graphellclient/node_modules
+Graphellserver/node_modules
+Graphellclient/dist/
+Graphellserver/dist/
+Graphellclient/.env
+Graphellserver/.env
+Graphellclient/.next/
