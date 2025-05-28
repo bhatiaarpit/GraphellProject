@@ -90,20 +90,25 @@ export const api = createApi({
   tagTypes: ["Projects", "Tasks", "Users", "Teams"],
   endpoints: (build) => ({
     getAuthUser: build.query({
-      queryFn: async (_, _queryApi, _extraoptions, fetchWithBQ) => {
+      queryFn: async (arg, queryApi, extraOptions, fetchWithBQ) => {
         try {
           const user = await getCurrentUser();
           const session = await fetchAuthSession();
-          if (!session) throw new Error("No session found");
+          if (!session) {
+            return { error: { status: 401, data: "No session found" } };
+          }
           const { userSub } = session;
-          const { accessToken } = session.tokens ?? {};
 
           const userDetailsResponse = await fetchWithBQ(`users/${userSub}`);
+          if (userDetailsResponse.error) {
+            return { error: userDetailsResponse.error };
+          }
           const userDetails = userDetailsResponse.data as User;
 
           return { data: { user, userSub, userDetails } };
-        } catch (error: any) {
-          return { error: error.message || "Could not fetch user data" };
+        } catch (error: unknown) {
+          const errorMessage = error instanceof Error ? error.message : "Could not fetch user data";
+          return { error: { status: 500, data: errorMessage } };
         }
       },
     }),
