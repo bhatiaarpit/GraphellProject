@@ -48,6 +48,7 @@ const ModalNewTask = ({ isOpen, onClose, id = null }: Props) => {
       
       // Close the modal after successful task creation
       onClose();
+      window.location.reload();
       
       // Reset form fields
       setTitle("");
