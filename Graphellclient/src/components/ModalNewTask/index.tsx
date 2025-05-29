@@ -32,18 +32,40 @@ const ModalNewTask = ({ isOpen, onClose, id = null }: Props) => {
       representation: "complete",
     });
 
-    await createTask({
-      title,
-      description,
-      status,
-      priority,
-      tags,
-      startDate: formattedStartDate,
-      dueDate: formattedDueDate,
-      authorUserId: parseInt(authorUserId),
-      assignedUserId: parseInt(assignedUserId),
-      projectId: id !== null ? Number(id) : Number(projectId),
-    });
+    try {
+      await createTask({
+        title,
+        description,
+        status,
+        priority,
+        tags,
+        startDate: formattedStartDate,
+        dueDate: formattedDueDate,
+        authorUserId: parseInt(authorUserId),
+        assignedUserId: parseInt(assignedUserId),
+        projectId: id !== null ? Number(id) : Number(projectId),
+      });
+      
+      // Close the modal after successful task creation
+      onClose();
+      
+      // Reset form fields
+      setTitle("");
+      setDescription("");
+      setStatus(Status.ToDo);
+      setPriority(Priority.Backlog);
+      setTags("");
+      setStartDate("");
+      setDueDate("");
+      setAuthorUserId("");
+      setAssignedUserId("");
+      setProjectId("");
+      
+    } catch (error) {
+      // Handle error if needed
+      console.error("Error creating task:", error);
+      // You might want to show an error message to the user here
+    }
   };
 
   const isFormValid = () => {

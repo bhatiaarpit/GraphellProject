@@ -1,6 +1,5 @@
 "use client";
-import { useAppDispatch, useAppSelector } from "@/app/redux";
-import { setIsSidebarCollapsed } from "@/state";
+import { useAppSelector } from "@/app/redux";
 import { useGetProjectsQuery } from "@/state/api";
 // import { signOut } from "aws-amplify/auth";
 import {
@@ -19,7 +18,6 @@ import {
   ShieldAlert,
   User,
   Users,
-  X,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -31,7 +29,6 @@ const Sidebar = () => {
   const [showPriority, setShowPriority] = useState(true);
 
   const { data: projects } = useGetProjectsQuery();
-  const dispatch = useAppDispatch();
   const isSidebarCollapsed = useAppSelector((state) => state.global.isSidebarCollapsed);
   const isDarkMode = useAppSelector((state) => state.global.isDarkMode); // Get dark mode state
 
@@ -41,31 +38,9 @@ const Sidebar = () => {
 
   return (
     <div className={sidebarClassNames}>
-      <div className="flex h-full w-full flex-col justify-start">
-        <div className="z-50 flex min-h-[5.6rem] items-center justify-between bg-white px-6 pt-3 dark:bg-black">
-          <div className="text-xl font-bold text-gray-800 dark:text-white">
-            {/* Conditionally render the logo based on dark mode */}
-            <Image
-              className="w-[12rem]"
-              src={isDarkMode ? "/whitelogo.svg" : "/logo.svg"}
-              alt="Logo"
-              width={100}
-              height={100}
-            />
-          </div>
-          {isSidebarCollapsed ? null : (
-            <button
-              className="py-3"
-              onClick={() => {
-                dispatch(setIsSidebarCollapsed(!isSidebarCollapsed));
-              }}
-            >
-              <X className="h-6 w-6 text-gray-800 hover:text-gray-500 dark:text-white" />
-            </button>
-          )}
-        </div>
+      <div className="flex h-full w-full flex-col justify-start mt-[5.5rem]">
         {/* Team */}
-        <div className="flex items-center gap-5 border-y-[1.5px] border-gray-200 px-8 py-4 dark:border-gray-700">
+        <div className="flex items-center gap-5 border-b-[1.5px] border-gray-200 px-8 py-4 dark:border-gray-700">
           <Image className="w-[2rem]" src={isDarkMode ? "/w-sign-logo.svg" : "/sign-logo.svg"} alt="Logo" width={100} height={100} />
           <div>
             <h3 className="text-md font-bold tracking-wide dark:text-gray-200">

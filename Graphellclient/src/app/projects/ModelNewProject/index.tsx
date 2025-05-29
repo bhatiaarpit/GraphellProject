@@ -6,9 +6,10 @@ import { formatISO } from "date-fns";
 type Props = {
   isOpen: boolean;
   onClose: () => void;
+  onProjectCreated?: (projectId: number) => void; // Add optional callback prop
 };
 
-const ModalNewProject = ({ isOpen, onClose }: Props) => {
+const ModalNewProject = ({ isOpen, onClose, onProjectCreated }: Props) => {
   const [createProject, { isLoading }] = useCreateProjectMutation();
   const [projectName, setProjectName] = useState("");
   const [description, setDescription] = useState("");
@@ -25,12 +26,36 @@ const ModalNewProject = ({ isOpen, onClose }: Props) => {
       representation: "complete",
     });
 
-    await createProject({
-      name: projectName,
-      description,
-      startDate: formattedStartDate,
-      endDate: formattedEndDate,
-    });
+    try {
+      const response = await createProject({
+        name: projectName,
+        description,
+        startDate: formattedStartDate,
+        endDate: formattedEndDate,
+      }).unwrap(); // Add .unwrap() to get the actual response data
+      
+      // Close the modal after successful project creation
+      onClose();
+      
+      // Reset form fields
+      setProjectName("");
+      setDescription("");
+      setStartDate("");
+      setEndDate("");
+      
+      // Call the callback function with the project ID if provided
+      if (onProjectCreated) {
+        onProjectCreated(response.id);
+      } else {
+        // Alternative: Use window.location for direct navigation
+        window.location.href = `/projects/${response.id}`;
+      }
+      
+    } catch (error) {
+      // Handle error if needed
+      console.error("Error creating project:", error);
+      // You might want to show an error message to the user here
+    }
   };
 
   const isFormValid = () => {
